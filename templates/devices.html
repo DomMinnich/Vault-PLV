@@ -1,0 +1,149 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- devices.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Device Management</h2>
+<form method="GET" action="{{ url_for('main.manage_devices') }}" class="my-4">
+    <input type="text" name="search" value="{{ search_query }}" placeholder="Search devices..." class="form-control mb-3">
+    <div class="input-group mb-3">
+        <select name="sort_by" class="form-select">
+            <option value="model_name" {% if sort_by == 'model_name' %}selected{% endif %}>Type</option>
+            <option value="asset_number" {% if sort_by == 'asset_number' %}selected{% endif %}>Asset Number</option>
+            <option value="manufacturer" {% if sort_by == 'manufacturer' %}selected{% endif %}>Manufacturer</option>
+            <option value="assigned_user" {% if sort_by == 'assigned_user' %}selected{% endif %}>Assigned User</option>
+            <option value="status" {% if sort_by == 'status' %}selected{% endif %}>Status</option>
+        </select>
+        <input type="text" name="status" value="{{ status_filter }}" placeholder="Filter by status" class="form-control">
+        <button type="submit" class="btn btn-primary">Search and Sort</button>
+    </div>
+</form>
+
+<table class="table animate__animated animate__fadeIn">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Asset Number</th>
+            <th>Manufacturer</th>
+            <th>Assigned User</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for device in devices %}
+        <tr>
+            <td>{{ device.model_name }}</td>
+            <td>{{ device.asset_number }}</td>
+            <td>{{ device.manufacturer }}</td>
+            <td>{{ device.assigned_user }}</td>
+            <td>{{ device.status }}</td>
+            <td class="no-copy">
+                <a href="{{ url_for('main.device_detail', device_id=device.id) }}" class="btn btn-info btn-sm">View</a>
+                {% if current_user.is_admin %}
+                <a href="{{ url_for('main.edit_device', device_id=device.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeleteDevice('{{ url_for('main.delete_device', device_id=device.id) }}')">Delete</button>
+                {% endif %}
+                <button type="button" class="btn btn-secondary btn-sm" onclick="generateQRCode('{{ device.model_name }}', '{{ device.asset_number }}', '{{ device.manufacturer }}', '{{ device.assigned_user }}', '{{ device.status }}')">QR</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if current_user.is_admin %}
+<a href="{{ url_for('main.add_device') }}" class="btn btn-primary my-4">Add New Device</a>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteDeviceModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeDeleteDeviceModal()">&times;</span>
+        <p>Are you sure you want to delete this device?</p>
+        <form id="deleteDeviceForm" method="POST" action="">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-danger">Yes</button>
+            <button type="button" class="btn btn-secondary" onclick="closeDeleteDeviceModal()">No</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    function confirmDeleteDevice(deleteUrl) {
+        var modal = document.getElementById('deleteDeviceModal');
+        var form = document.getElementById('deleteDeviceForm');
+        form.action = deleteUrl;
+        modal.style.display = 'block';
+    }
+
+    function closeDeleteDeviceModal() {
+        var modal = document.getElementById('deleteDeviceModal');
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        var deleteModal = document.getElementById('deleteDeviceModal');
+        if (event.target == deleteModal) {
+            deleteModal.style.display = 'none';
+        }
+    }
+
+    function generateQRCode(model_name, asset_number, manufacturer, assigned_user, status) {
+        var qrText = `Type: ${model_name}\nAsset Number: ${asset_number}\nManufacturer: ${manufacturer}\nAssigned User: ${assigned_user}\nStatus: ${status}`;
+        var qrcode = new QRCode(document.createElement("div"), {
+            text: qrText,
+            width: 600,
+            height: 600
+        });
+
+        setTimeout(function() {
+            var qrCanvas = qrcode._oDrawing._elCanvas;
+            var img = qrCanvas.toDataURL("image/png");
+            var link = document.createElement('a');
+            link.href = img;
+            link.download = `QR_Code_${asset_number}.png`;
+            link.click();
+        }, 100); // Timeout to ensure QR code is rendered
+    }
+</script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

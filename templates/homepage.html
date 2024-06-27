@@ -1,0 +1,74 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Homepage.html -->
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="animate__animated animate__fadeIn">Welcome {{ current_user.username }} to the <span class="vault-font">VAULT</span></h1>
+    <p class="animate__animated animate__fadeIn">Enjoy managing your database!</p>
+
+    <div class="row mt-4">
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">Devices</h5>
+                    <p class="card-text">Database of Devices, Asset Tags, Serial Number...</p>
+                    <br>
+                    <a href="{{ url_for('main.manage_devices') }}" class="btn btn-primary">Go to Devices</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">Students</h5>
+                    <p class="card-text">Database of Students, Login Information...</p>
+                    <br>
+                    <a href="{{ url_for('main.manage_personnels') }}" class="btn btn-primary">Go to Students</a>
+                </div>
+            </div>
+        </div>
+
+        {% if current_user.is_admin %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Staff</h5>
+                    <p class="card-text">Add, update, and manage staff from your database.</p>
+                    <a href="{{ url_for('main.manage_staffs') }}" class="btn btn-primary">Go to Staff</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if current_user.is_theresa%}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Repairs</h5>
+                    <p class="card-text">Add, update, and manage repairs from your database.</p>
+                    <a href="{{ url_for('main.manage_repairs') }}" class="btn btn-primary">Go to Repairs</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if current_user.is_admin %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white animate__animated animate__fadeInUp">
+                <div class="card-body">
+                    <h5 class="card-title">Import/Export Data</h5>
+                    <p class="card-text">Import and export devices and personnel data.</p>
+                    <a href="{{ url_for('main.import_devices') }}" class="btn btn-primary">Import Devices</a>
+                    <a href="{{ url_for('main.export_devices') }}" class="btn btn-secondary">Export Devices</a>
+                    <a href="{{ url_for('main.import_personnel') }}" class="btn btn-primary mt-2">Import Students</a>
+                    <a href="{{ url_for('main.export_personnel') }}" class="btn btn-secondary mt-2">Export Students</a>
+                    <a href="{{ url_for('main.import_staff') }}" class="btn btn-primary mt-2">Import Staff</a>
+                    <a href="{{ url_for('main.export_staff') }}" class="btn btn-secondary mt-2">Export Staff</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

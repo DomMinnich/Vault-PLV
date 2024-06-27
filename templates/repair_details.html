@@ -1,0 +1,85 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Repair Details.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Repair Details</h2>
+<table class="table">
+  <tr>
+    <th>First Name:</th>
+    <td>{{ repair.first_name }}</td>
+  </tr>
+  <tr>
+    <th>Last Name:</th>
+    <td>{{ repair.last_name }}</td>
+  </tr>
+  <tr>
+    <th>Original Damage:</th>
+    <td>{{ repair.original_damage }}</td>
+  </tr>
+  <tr>
+    <th>Asset ID:</th>
+    <td>{{ repair.asset_id }}</td>
+  </tr>
+  <tr>
+    <th>Loaner ID:</th>
+    <td>{{ repair.loaner_id }}</td>
+  </tr>
+  <tr>
+    <th>Loaner Damage:</th>
+    <td>{{ repair.loaner_damage }}</td>
+  </tr>
+  <tr>
+    <th>Slip Picture:</th>
+    <td>
+      <a href="{{ url_for('static', filename='slips/' ~ repair.slip_picture) }}" download>
+        <img src="{{ url_for('static', filename='slips/' ~ repair.slip_picture) }}" alt="Slip Picture" width="125" height="125" />
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <th>Original Computer Damage Picture:</th>
+    <td>
+      <a href="{{ url_for('static', filename='damage/' ~ repair.original_computer_damage_picture) }}" download>
+        <img src="{{ url_for('static', filename='damage/' ~ repair.original_computer_damage_picture) }}" alt="Damage Picture" width="125" height="125" />
+      </a>
+    </td>
+  </tr>
+    <th>Status:</th>
+    <td>{{ repair.status }}</td>
+  </tr>
+  <tr>
+    <th>New Computer Asset ID:</th>
+    <td>{{ repair.new_computer_asset_id }}</td>
+  </tr>
+  <tr>
+    <th>New Computer Damages:</th>
+    <td>{{ repair.new_computer_damages }}</td>
+  </tr>
+  <tr>
+    <th>Notes:</th>
+    <td>{{ repair.notes }}</td>
+  </tr>
+</table>
+
+<h3 class="my-4">Repair Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

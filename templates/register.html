@@ -1,0 +1,36 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Register.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2 class="animate__animated animate__fadeIn">Register</h2>
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username(class="form-control",size=32, placeholder="Username") }}<br>
+        {% for error in form.username.errors %}
+            <span class="error">{{ error }}</span><br>
+        {% endfor %}
+    </p>
+    <p>
+
+        {{ form.password(class="form-control",size=32, placeholder="Password") }}<br>
+        {% for error in form.password.errors %}
+            <span class="error">{{ error }}</span><br>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.confirm_password(class="form-control",size=32, placeholder="Confirm Password") }}<br>
+        {% for error in form.confirm_password.errors %}
+            <span class="error">{{ error }}</span><br>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.registration_code(class="form-control",size=32, placeholder="Registration Code") }}<br>
+        {% for error in form.registration_code.errors %}
+            <span class="error">{{ error }}</span><br>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+{% endblock %}

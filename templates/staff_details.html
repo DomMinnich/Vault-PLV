@@ -1,0 +1,85 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Staff Details.html -->
+
+{% extends "base.html" %} {% block content %}
+<h2 class="my-4">Staff Details</h2>
+<table class="table animate__animated animate__fadeIn">
+  <tr>
+    <th>First Name:</th>
+    <td>{{ staff.first_name }}</td>
+  </tr>
+  <tr>
+    <th>Last Name:</th>
+    <td>{{ staff.last_name }}</td>
+  </tr>
+  <tr>
+    <th>Title:</th>
+    <td>{{ staff.title }}</td>
+  </tr>
+  <tr>
+    <th>Laptop Username:</th>
+    <td>{{ staff.laptop_username }}</td>
+  </tr>
+  <tr>
+    <th>Laptop Password:</th>
+    <td>{{ staff.laptop_password }}</td>
+  </tr>
+  <tr>
+    <th>Microsoft Password:</th>
+    <td>{{ staff.microsoft_password }}</td>
+  </tr>
+  <tr>
+    <th>Google Password:</th>
+    <td>{{ staff.google_password }}</td>
+  </tr>
+  <tr>
+    <th>Xmedius Password:</th>
+    <td>{{ staff.xmedius_password }}</td>
+  </tr>
+  <tr>
+    <th>Pin Code Number:</th>
+    <td>{{ staff.pin_code_number }}</td>
+  </tr>
+  <tr>
+    <th>Keri Card Number:</th>
+    <td>{{ staff.keri_card_number }}</td>
+  </tr>
+  <tr>
+    <th>Apple:</th>
+    <td>{{ staff.apple }}</td>
+  </tr>
+  <tr>
+    <th>PC Asset Number:</th>
+    <td>{{ staff.device_id }}</td>
+  </tr>
+  <tr>
+    <th>Powercord Asset Number:</th>
+    <td>{{ staff.powercord_id }}</td>
+  </tr>
+  <tr>
+    <th>Notes:</th>
+    <td>{{ staff.notes }}</td>
+  </tr>
+</table>
+
+<h3 class="my-4">Staff Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

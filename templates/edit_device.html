@@ -1,0 +1,85 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Edit Device.html -->
+
+{% extends "base.html" %} {% block content %}
+<h2 class="my-4">Edit Device</h2>
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.model_name.label }}<br />
+    {{ form.model_name(class="form-control mb-3", size=32) }} {% for error in
+    form.model_name.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.asset_number.label }}<br />
+    {{ form.asset_number(class="form-control mb-3", size=32) }} {% for error in
+    form.asset_number.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.serial_number.label }}<br />
+    {{ form.serial_number(class="form-control mb-3", size=32) }} {% for error in
+    form.serial_number.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.manufacturer.label }}<br />
+    {{ form.manufacturer(class="form-control mb-3", size=32) }} {% for error in
+    form.manufacturer.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.purchase_date.label }}<br />
+    {{ form.purchase_date(class="form-control mb-3") }} {% for error in
+    form.purchase_date.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.warranty_info.label }}<br />
+    {{ form.warranty_info(class="form-control mb-3", size=32) }} {% for error in
+    form.warranty_info.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.assigned_user.label }}<br />
+    {{ form.assigned_user(class="form-control mb-3", size=32) }} {% for error in
+    form.assigned_user.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.status.label }}<br />
+    {{ form.status(class="form-control mb-3") }} {% for error in
+    form.status.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+<h3 class="my-4">Device Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

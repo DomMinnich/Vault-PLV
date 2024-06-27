@@ -1,0 +1,23 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Edit Repair.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Repair</h2>
+<form method="POST" enctype="multipart/form-data" action="">
+  {{ form.hidden_tag() }}
+  <p>{{ form.first_name.label }}<br>{{ form.first_name(class="form-control") }}</p>
+  <p>{{ form.last_name.label }}<br>{{ form.last_name(class="form-control") }}</p>
+  <p>{{ form.original_damage.label }}<br>{{ form.original_damage(class="form-control") }}</p>
+  <p>{{ form.asset_id.label }}<br>{{ form.asset_id(class="form-control") }}</p>
+  <p>{{ form.loaner_id.label }}<br>{{ form.loaner_id(class="form-control") }}</p>
+  <p>{{ form.loaner_damage.label }}<br>{{ form.loaner_damage(class="form-control") }}</p>
+  <p>{{ form.slip_picture.label }}<br>{{ form.slip_picture(class="form-control") }}</p>
+  <p>{{ form.original_computer_damage_picture.label }}<br>{{ form.original_computer_damage_picture(class="form-control") }}</p>
+  <p>{{ form.status.label }}<br>{{ form.status(class="form-control") }}</p>
+  <p>{{ form.new_computer_asset_id.label }}<br>{{ form.new_computer_asset_id(class="form-control") }}</p>
+  <p>{{ form.new_computer_damages.label }}<br>{{ form.new_computer_damages(class="form-control") }}</p>
+  <p>{{ form.notes.label }}<br>{{ form.notes(class="form-control") }}</p>
+  <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+{% endblock %}

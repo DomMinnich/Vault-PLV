@@ -1,0 +1,883 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Web Files.html -->
+
+{% extends "base.html" %} {% block content %}
+<head>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+</head>
+
+
+<style>
+  body {
+    overflow: hidden;
+  }
+
+  /* This will affect the scrollbar globally */
+  ::-webkit-scrollbar {
+    width: 10px; /* width of the entire scrollbar */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #282c34; /* color of the tracking area */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #888; /* color of the scroll thumb */
+    border-radius: 20px; /* radius of the scroll thumb */
+    border: 3px solid #282c34; /* creates padding around scroll thumb */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* color of the scroll thumb on hover */
+  }
+
+  .explorer {
+    width: 80%;
+    max-width: 80%;
+    max-height: 60%;
+    background-color: #20232a;
+    padding: 20px;
+    border-radius: 5px;
+    overflow: auto;
+    position: relative;
+    flex-grow: 1;
+    border-radius: 5px;
+    user-select: none;
+  }
+  .breadcrumb {
+    margin-bottom: 10px;
+    font-size: 14px;
+    display:flow-root;
+  }
+  .breadcrumb a {
+    color: #f1fb61;
+    text-decoration: none;
+    user-select: none;
+    cursor: pointer;
+    padding: 5px 0;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-color: #282c34;
+    box-shadow: 0 0 5px #000;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Arial, sans-serif;
+    margin-left: 10px;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .tile {
+    background-color: #282c34;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    cursor: pointer;
+    width: 150px;
+    text-align: center;
+    position: relative;
+  }
+  .tile input {
+    border: none;
+    background: none;
+    color: #f57c86;
+    width: 100%;
+    font-size: 16px;
+  }
+  .tile input:focus {
+    outline: none;
+  }
+  .tile i {
+    margin-right: 5px;
+    color: #317ace;
+  }
+
+  .tile i.fas.fa-folder {
+    margin-right: 5px;
+    color: rgb(221, 32, 58);
+  }
+
+  .context-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    background-color: #282c34;
+    border: 1px solid #61dafb;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  .context-menu a {
+    display: block;
+    color: #f8fb61;
+    text-decoration: none;
+    padding: 5px 0;
+  }
+  .context-menu a:hover {
+    background-color: #20232a;
+  }
+  .context-menu .move-to {
+    position: relative;
+    color: #f8fb61;
+  }
+
+  .context-menu .move-to:hover {
+    background-color: #20232a;
+  }
+
+  .sub-menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    background-color: #282c34;
+    border: 1px solid #61dafb;
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 1001;
+  }
+  .sub-menu a {
+    display: block;
+    color: #cc6d71;
+    text-decoration: none;
+    padding: 5px 0;
+  }
+  .sub-menu a:hover {
+    background-color: #20232a;
+  }
+  .context-menu .move-to:hover .sub-menu,
+  .context-menu .move-to:focus-within .sub-menu,
+  .context-menu .move-to.show-submenu .sub-menu {
+    display: block;
+  }
+  .drag-drop-box {
+    width: 80%;
+    max-width: 800px;
+    height: 100px;
+    background-color: #20232a;
+    border: 2px dashed #aa3746;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .drag-drop-box.dragover {
+    background-color: #2c313a;
+  }
+  .viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    z-index: 1000;
+  }
+  .viewer-content {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 80%;
+    overflow: auto;
+  }
+  .viewer-content pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%;
+    max-width: 800px;
+    margin-bottom: 20px;
+  }
+
+  .controls input {
+    border: none;
+    background: none;
+    color: #f57c86;
+    width: 100%;
+    font-size: 16px;
+    border: 1px solid #61dafb;
+    font-size: 1;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+  }
+
+  .controls select {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #61dafb;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: #282c34;
+    color: #f57c86;
+    font-size: 1;
+    font-family: Arial, sans-serif;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  #overCon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+  }
+</style>
+
+<h2 class="animate__animated animate__fadeIn">Web Files</h2>
+<div id="overCon">
+  <div class="controls">
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Search files and folders"
+    />
+    <select id="sort-select">
+      <option value="name-asc">Name (A-Z)</option>
+      <option value="name-desc">Name (Z-A)</option>
+      <option value="date-asc">Date (Oldest First)</option>
+      <option value="date-desc">Date (Newest First)</option>
+    </select>
+  </div>
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div class="explorer" id="explorer"></div>
+  <div class="drag-drop-box" id="drag-drop-box">Drag & Drop Files Here</div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    let currentDirectory = "";
+
+    loadDirectory("");
+
+    function loadDirectory(dir = "", query = "", sort = "name-asc") {
+      currentDirectory = dir;
+      fetch(
+        `/list?dir=${encodeURIComponent(dir)}&query=${encodeURIComponent(
+          query
+        )}&sort=${encodeURIComponent(sort)}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const explorer = document.getElementById("explorer");
+          explorer.innerHTML = "";
+
+          const breadcrumb = document.getElementById("breadcrumb");
+          const pathParts = data.path
+            .replace(/\\/g, "/")
+            .split("/")
+            .filter((part) => part);
+          breadcrumb.innerHTML = "";
+          let pathAccumulator = "";
+          pathParts.forEach((part, index) => {
+            pathAccumulator += (index > 0 ? "/" : "") + part;
+            const link = document.createElement("a");
+            link.href = "#";
+            link.textContent = part;
+            link.dataset.path = pathAccumulator;
+            link.onclick = function (event) {
+              event.preventDefault();
+              loadDirectory(link.dataset.path);
+            };
+            breadcrumb.appendChild(link);
+            if (index < pathParts.length - 1) {
+              breadcrumb.appendChild(document.createTextNode(" / "));
+            }
+          });
+
+          function getCsrfToken() {
+            const metaTag = document.querySelector('meta[name="csrf-token"]');
+            if (metaTag) {
+              return metaTag.getAttribute("content");
+            } else {
+              console.error("CSRF token meta tag not found");
+              return "";
+            }
+          }
+
+          data.folders.forEach((folder) => {
+            const folderTile = document.createElement("div");
+            folderTile.className = "tile";
+            folderTile.innerHTML = `<i class="fas fa-folder"></i> <input type="text" value="${folder}" data-path="${data.path}/${folder}">`;
+            explorer.appendChild(folderTile);
+
+            folderTile.ondblclick = function () {
+              loadDirectory(`${data.path}/${folder}`);
+            };
+
+            folderTile.ondragover = function (event) {
+              event.preventDefault();
+              console.log("Drag over folder:", folder);
+            };
+
+            folderTile.ondrop = function (event) {
+              event.preventDefault();
+              console.log("Drop on folder:", folder);
+              const files = event.dataTransfer.files;
+              const targetDir = folderTile
+                .querySelector("input")
+                .getAttribute("data-path");
+              for (let file of files) {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("target_dir", targetDir);
+                fetch("/upload", {
+                  method: "POST",
+                  headers: {
+                    "X-CSRFToken": getCsrfToken(),
+                  },
+                  body: formData,
+                })
+                  .then(() => {
+                    console.log("File uploaded:", file.name);
+                    loadDirectory(data.path);
+                  })
+                  .catch((error) => console.error("Upload error:", error));
+              }
+            };
+
+            folderTile
+              .querySelector("input")
+              .addEventListener("blur", function (event) {
+                const oldPath = event.target.getAttribute("data-path");
+                const newPath =
+                  oldPath.split("/").slice(0, -1).join("/") +
+                  "/" +
+                  event.target.value;
+
+                console.log(`Renaming from ${oldPath} to ${newPath}`);
+
+                fetch("/rename", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCsrfToken(),
+                  },
+                  body: JSON.stringify({
+                    old_name: oldPath,
+                    new_name: newPath,
+                  }),
+                })
+                  .then((response) => {
+                    if (response.ok) {
+                      response.json().then((data) => {
+                        loadDirectory(data.path);
+                      });
+                    } else {
+                      response.json().then((data) => {
+                        alert(data.error);
+                      });
+                    }
+                  })
+                  .catch((error) => {
+                    console.error("Error renaming folder:", error);
+                    alert("Error renaming folder");
+                  });
+              });
+
+            // Right-click context menu for folder tiles
+            folderTile.addEventListener("contextmenu", function (event) {
+              event.preventDefault();
+              showContextMenu(event, folderTile, true, false, data.folders);
+            });
+          });
+
+          data.files.forEach((file) => {
+            const fileTile = document.createElement("div");
+            fileTile.className = "tile";
+            fileTile.innerHTML = `<i class="fas fa-file"></i> ${file}`;
+            fileTile.dataset.path = `${data.path}/${file}`;
+            explorer.appendChild(fileTile);
+
+            // Double-click to view file contents
+            fileTile.ondblclick = function () {
+              viewFile(`${data.path}/${file}`);
+            };
+
+            // Right-click context menu for file tiles
+            fileTile.addEventListener("contextmenu", function (event) {
+              event.preventDefault();
+              showContextMenu(event, fileTile, false, true, data.folders);
+            });
+          });
+
+          // Right-click context menu for explorer
+          explorer.addEventListener("contextmenu", function (event) {
+            event.preventDefault();
+            if (!event.target.closest(".tile")) {
+              showContextMenu(event, null, false, false, data.folders);
+            }
+          });
+        });
+    }
+
+    function viewFile(filePath) {
+      fetch(`/view_file?file_path=${encodeURIComponent(filePath)}`)
+        .then((response) => {
+          if (response.ok) {
+            const contentType = response.headers.get("Content-Type");
+            if (contentType.startsWith("text/")) {
+              return response.text();
+            } else {
+              return response.blob();
+            }
+          } else {
+            throw new Error(
+              "Cannot Preview File Type\nTry Downloading Instead"
+            );
+          }
+        })
+        .then((content) => {
+          const viewer = document.createElement("div");
+          viewer.className = "viewer";
+          viewer.onclick = function () {
+            document.body.removeChild(viewer);
+          };
+
+          const viewerContent = document.createElement("div");
+          viewerContent.className = "viewer-content";
+
+          if (typeof content === "string") {
+            const pre = document.createElement("pre");
+            pre.textContent = content;
+            viewerContent.appendChild(pre);
+          } else {
+            const url = URL.createObjectURL(content);
+            const ext = filePath.split(".").pop().toLowerCase();
+            let element;
+
+            if (ext === "pdf") {
+              element = document.createElement("iframe");
+              element.src = url;
+              element.style.width = "65vw";
+              element.style.height = "75vh";
+            } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(ext)) {
+              element = document.createElement("img");
+              element.src = url;
+              element.style.maxWidth = "65vw";
+              element.style.maxHeight = "75vh";
+            }
+
+            viewerContent.appendChild(element);
+          }
+
+          viewer.appendChild(viewerContent);
+          document.body.appendChild(viewer);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+
+    function showContextMenu(event, tile, isFolderTile, isFileTile, folders) {
+      const existingMenus = document.querySelectorAll(".context-menu");
+      existingMenus.forEach((menu) => menu.remove());
+
+      const contextMenu = document.createElement("div");
+      contextMenu.className = "context-menu";
+
+      function getCsrfToken() {
+        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        if (metaTag) {
+          return metaTag.getAttribute("content");
+        } else {
+          console.error("CSRF token meta tag not found");
+          return "";
+        }
+      }
+
+      if (isFolderTile) {
+        contextMenu.innerHTML = `
+        <a href="#" class="rename">Rename</a>
+        <a href="#" class="add-subfolder">Add Subfolder</a>
+        <a href="#" class="download">Download</a>
+        <a href="#" class="move-to-parent">Move to Parent Directory</a>
+        <a href="#" class="delete">Delete</a>
+        <div class="move-to">Move to
+            <div class="sub-menu">
+                ${folders
+                  .map(
+                    (folder) =>
+                      `<a href="#" data-folder="${folder}">${folder}</a>`
+                  )
+                  .join("")}
+            </div>
+        </div>
+      `;
+      } else if (isFileTile) {
+        contextMenu.innerHTML = `
+        <a href="#" class="download">Download</a>
+        <a href="#" class="move-to-parent">Move to Parent Directory</a>
+        <a href="#" class="delete">Delete</a>
+        <div class="move-to">Move to
+            <div class="sub-menu">
+                ${folders
+                  .map(
+                    (folder) =>
+                      `<a href="#" data-folder="${folder}">${folder}</a>`
+                  )
+                  .join("")}
+            </div>
+        </div>
+      `;
+      } else {
+        contextMenu.innerHTML = `
+        <a href="#" class="add-folder">Add New Folder</a>
+      `;
+      }
+
+      document.body.appendChild(contextMenu);
+      contextMenu.style.top = `${event.clientY}px`;
+      contextMenu.style.left = `${event.clientX}px`;
+      contextMenu.style.display = "block";
+
+      if (isFolderTile || isFileTile) {
+        const moveToElement = contextMenu.querySelector(".move-to");
+        const subMenuElement = contextMenu.querySelector(".sub-menu");
+
+        moveToElement.addEventListener("mouseover", () => {
+          moveToElement.classList.add("show-submenu");
+        });
+
+        moveToElement.addEventListener("mouseleave", () => {
+          moveToElement.classList.remove("show-submenu");
+        });
+
+        subMenuElement.addEventListener("mouseover", () => {
+          moveToElement.classList.add("show-submenu");
+        });
+
+        subMenuElement.addEventListener("mouseleave", () => {
+          moveToElement.classList.remove("show-submenu");
+        });
+
+        contextMenu
+          .querySelectorAll(".move-to .sub-menu a")
+          .forEach((subMenuLink) => {
+            subMenuLink.onclick = function (event) {
+              event.preventDefault();
+              const targetFolder = subMenuLink.dataset.folder;
+              const itemPath = tile.querySelector("input")
+                ? tile.querySelector("input").getAttribute("data-path")
+                : tile.dataset.path;
+              const newPath = `${currentDirectory}/${targetFolder}/${itemPath
+                .split("/")
+                .pop()}`;
+              fetch("/rename", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCsrfToken(),
+                },
+                body: JSON.stringify({
+                  old_name: itemPath,
+                  new_name: newPath,
+                }),
+              }).then((response) => {
+                if (response.ok) {
+                  loadDirectory(currentDirectory);
+                } else {
+                  alert("Error moving item");
+                }
+              });
+              contextMenu.remove();
+            };
+          });
+      }
+
+      if (isFolderTile) {
+        contextMenu.querySelector(".rename").onclick = function (event) {
+          event.preventDefault();
+          const input = tile.querySelector("input");
+          input.focus();
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".add-subfolder").onclick = function (event) {
+          event.preventDefault();
+          const parentDir = tile
+            .querySelector("input")
+            .getAttribute("data-path");
+          const newFolderName = prompt("Enter new subfolder name:");
+          if (newFolderName) {
+            fetch("/create_folder", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              body: JSON.stringify({
+                parent_dir: parentDir,
+                new_folder_name: newFolderName,
+              }),
+            }).then((response) => {
+              if (response.ok) {
+                loadDirectory(parentDir);
+              } else {
+                alert("Error creating folder");
+              }
+            });
+          }
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".download").onclick = function (event) {
+          event.preventDefault();
+          const folderPath = tile
+            .querySelector("input")
+            .getAttribute("data-path");
+          window.location.href = `/download_folder?folder_path=${encodeURIComponent(
+            folderPath
+          )}`;
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".move-to-parent").onclick = function (
+          event
+        ) {
+          event.preventDefault();
+          const folderPath = tile
+            .querySelector("input")
+            .getAttribute("data-path");
+          fetch("/move_to_parent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCsrfToken(),
+            },
+            body: JSON.stringify({ path: folderPath }),
+          }).then((response) => {
+            if (response.ok) {
+              loadDirectory(currentDirectory);
+            } else {
+              alert("Error moving folder");
+            }
+          });
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".delete").onclick = function (event) {
+          event.preventDefault();
+          const folderPath = tile
+            .querySelector("input")
+            .getAttribute("data-path");
+          if (confirm("Are you sure you want to delete this folder?")) {
+            fetch("/delete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              body: JSON.stringify({ path: folderPath }),
+            }).then((response) => {
+              if (response.ok) {
+                loadDirectory(currentDirectory);
+              } else {
+                alert("Error deleting folder");
+              }
+            });
+          }
+          contextMenu.remove();
+        };
+      } else if (isFileTile) {
+        contextMenu.querySelector(".download").onclick = function (event) {
+          event.preventDefault();
+          const filePath = tile.dataset.path;
+          window.location.href = `/download_file?file_path=${encodeURIComponent(
+            filePath
+          )}`;
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".move-to-parent").onclick = function (
+          event
+        ) {
+          event.preventDefault();
+          const filePath = tile.dataset.path;
+          fetch("/move_to_parent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCsrfToken(),
+            },
+            body: JSON.stringify({ path: filePath }),
+          }).then((response) => {
+            if (response.ok) {
+              loadDirectory(currentDirectory);
+            } else {
+              alert("Error moving file");
+            }
+          });
+          contextMenu.remove();
+        };
+
+        contextMenu.querySelector(".delete").onclick = function (event) {
+          event.preventDefault();
+          const filePath = tile.dataset.path;
+          if (confirm("Are you sure you want to delete this file?")) {
+            fetch("/delete", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              body: JSON.stringify({ path: filePath }),
+            }).then((response) => {
+              if (response.ok) {
+                loadDirectory(currentDirectory);
+              } else {
+                alert("Error deleting file");
+              }
+            });
+          }
+          contextMenu.remove();
+        };
+      } else {
+        contextMenu.querySelector(".add-folder").onclick = function (event) {
+          event.preventDefault();
+          const newFolderName = prompt("Enter new folder name:");
+          if (newFolderName) {
+            fetch("/create_folder", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              body: JSON.stringify({
+                parent_dir: currentDirectory,
+                new_folder_name: newFolderName,
+              }),
+            }).then((response) => {
+              if (response.ok) {
+                loadDirectory(currentDirectory);
+              } else {
+                alert("Error creating folder");
+              }
+            });
+          }
+          contextMenu.remove();
+        };
+      }
+
+      document.addEventListener(
+        "click",
+        function (event) {
+          if (!contextMenu.contains(event.target)) {
+            contextMenu.remove();
+          }
+        },
+        { once: true }
+      );
+    }
+
+    
+    function getCsrfToken() {
+        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        if (metaTag) {
+          return metaTag.getAttribute("content");
+        } else {
+          console.error("CSRF token meta tag not found");
+          return "";
+        }
+      }
+
+    // Drag & Drop functionality for the drag-drop-box
+    const dragDropBox = document.getElementById("drag-drop-box");
+
+    dragDropBox.addEventListener("dragover", function (event) {
+      event.preventDefault();
+      dragDropBox.classList.add("dragover");
+    });
+
+    dragDropBox.addEventListener("dragleave", function () {
+      dragDropBox.classList.remove("dragover");
+    });
+
+    dragDropBox.addEventListener("drop", function (event) {
+      event.preventDefault();
+      dragDropBox.classList.remove("dragover");
+
+      const files = event.dataTransfer.files;
+      for (let file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("target_dir", currentDirectory);
+        fetch("/upload", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCsrfToken(),
+          },
+          body: formData,
+        })
+          .then(() => {
+            console.log("File uploaded:", file.name);
+            loadDirectory(currentDirectory);
+          })
+          .catch((error) => console.error("Upload error:", error));
+      }
+    });
+
+    // Search functionality
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value;
+      const sort = document.getElementById("sort-select").value;
+      loadDirectory(currentDirectory, query, sort);
+    });
+
+    // Sort functionality
+    const sortSelect = document.getElementById("sort-select");
+    sortSelect.addEventListener("change", () => {
+      const sort = sortSelect.value;
+      const query = searchInput.value;
+      loadDirectory(currentDirectory, query, sort);
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Settings.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Settings</h2>
+    
+    {% if current_user.is_admin %}
+    <div class="mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Update Account Type</h5>
+            <form method="POST" action="{{ url_for('main.settings') }}">
+                {{ update_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ update_form.username.label(class="form-label") }}
+                    {{ update_form.username(class="form-control") }}
+                </div>
+                <div class="mb-3 form-check">
+                    {{ update_form.is_admin(class="form-check-input") }}
+                    {{ update_form.is_admin.label(class="form-check-label") }}
+                </div>
+                <button type="submit" name="update_account" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Delete Account</h5>
+            <form method="POST" action="{{ url_for('main.settings') }}">
+                {{ delete_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ delete_form.username.label(class="form-label") }}
+                    {{ delete_form.username(class="form-control") }}
+                </div>
+                <button type="submit" name="delete_account" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Change User Password</h5>
+            <form method="POST" action="{{ url_for('main.settings') }}">
+                {{ admin_password_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ admin_password_form.username.label(class="form-label") }}
+                    {{ admin_password_form.username(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ admin_password_form.new_password.label(class="form-label") }}
+                    {{ admin_password_form.new_password(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ admin_password_form.confirm_password.label(class="form-label") }}
+                    {{ admin_password_form.confirm_password(class="form-control") }}
+                </div>
+                <button type="submit" name="admin_change_password" class="btn btn-primary">Change Password</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Change Your Password</h5>
+            <form method="POST" action="{{ url_for('main.settings') }}">
+                {{ password_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ password_form.old_password.label(class="form-label") }}
+                    {{ password_form.old_password(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ password_form.new_password.label(class="form-label") }}
+                    {{ password_form.new_password(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ password_form.confirm_password.label(class="form-label") }}
+                    {{ password_form.confirm_password(class="form-control") }}
+                </div>
+                <button type="submit" name="change_password" class="btn btn-primary">Change Password</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

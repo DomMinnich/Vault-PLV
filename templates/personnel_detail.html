@@ -1,0 +1,85 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Personnel Detail.html -->
+
+{% extends "base.html" %} {% block content %}
+<h2 class="my-4">Student Details</h2>
+<table class="table animate__animated animate__fadeIn">            
+  <tr>
+    <th>First Name:</th>
+    <td>{{ personnel.first_name }}</td>
+  </tr>
+  <tr>
+    <th>Last Name:</th>
+    <td>{{ personnel.last_name }}</td>
+  </tr>
+  <tr>
+    <th>Laptop Username:</th>
+    <td>{{ personnel.laptop_username }}</td>
+  </tr>
+  <tr>
+    <th>Laptop Password:</th>
+    <td>{{ personnel.laptop_password }}</td>
+  </tr>
+  <tr>
+    <th>Microsoft Email:</th>
+    <td>{{ personnel.microsoft_email }}</td>
+  </tr>
+  <tr>
+    <th>Microsoft Password:</th>
+    <td>{{ personnel.microsoft_password }}</td>
+  </tr>
+  <tr>
+    <th>Google Email:</th>
+    <td>{{ personnel.google_email }}</td>
+  </tr>
+  <tr>
+    <th>Google Password:</th>
+    <td>{{ personnel.google_password }}</td>
+  </tr>
+  <tr>
+    <th>Clever Email:</th>
+    <td>{{ personnel.clever_email }}</td>
+  </tr>
+  <tr>
+    <th>Clever Password:</th>
+    <td>{{ personnel.clever_password }}</td>
+    </tr>
+    <tr>
+      <th>Powerschool Email:</th>
+      <td>{{ personnel.powerschool_email }}</td>
+      </tr>
+    <tr>
+      <th>Powerschool Password:</th>
+      <td>{{ personnel.powerschool_password }}</td>
+      </tr>
+  <tr>
+    <th>Device ID:</th>
+    <td>{{ personnel.device_id }}</td>
+  </tr>
+  <tr>
+    <th>Powercord ID:</th>
+    <td>{{ personnel.powercord_id }}</td>
+  </tr>
+</table>
+
+<h3 class="my-4">Personnel Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+

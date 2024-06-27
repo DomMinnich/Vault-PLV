@@ -1,0 +1,60 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- device_details.html -->
+ 
+{% extends "base.html" %} {% block content %}
+<h2 class="my-4">Device Details</h2>
+<table class="table animate__animated animate__fadeIn">
+  <tr>
+    <th>Type:</th>
+    <td>{{ device.model_name }}</td>
+  </tr>
+  <tr>
+    <th>Asset Number:</th>
+    <td>{{ device.asset_number }}</td>
+  </tr>
+  <th>Serial Number:</th>
+    <td>{{ device.serial_number }}</td>
+  </tr>
+  <tr>
+    <th>Manufacturer:</th>
+    <td>{{ device.manufacturer }}</td>
+  </tr>
+  <tr>
+    <th>Purchase Date:</th>
+    <td>{{ device.purchase_date.strftime('%Y-%m-%d') }}</td>
+  </tr>
+  <tr>
+    <th>Warranty Information:</th>
+    <td>{{ device.warranty_info }}</td>
+  </tr>
+  <tr>
+    <th>Assigned User:</th>
+    <td>{{ device.assigned_user }}</td>
+  </tr>
+  <tr>
+    <th>Status:</th>
+    <td>{{ device.status }}</td>
+  </tr>
+</table>
+
+<h3 class="my-4">Device Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

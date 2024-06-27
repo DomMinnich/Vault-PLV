@@ -1,0 +1,334 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap");
+
+body::after {
+  content: "";
+  background: url("bg12.png");
+  opacity: 0.8;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: -1;
+  filter: saturate(100%);
+  background-repeat: no-repeat; 
+  background-size: cover; 
+  background-position: center;
+}
+
+body {
+  background-color: #0d0d0d;
+  color: #d4d4d4;
+  font-family: "Noto Sans JP", sans-serif;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.navbar {
+  background-color: #1a1a1a;
+  border-bottom: 2px solid #ea0046;
+}
+
+.navbar-brand,
+.navbar-nav .nav-link {
+  color: #d4d4d4 !important;
+  transition: color 0.3s;
+}
+
+.bg-dark2 {
+  background-color: #000000 !important;
+  opacity: 0.9 !important;
+}
+
+.navbar-brand:hover,
+.navbar-nav .nav-link:hover {
+  color: #ea0046 !important;
+}
+
+.container {
+  background-color: #1a1a1ad3;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #ffffff;
+  border-bottom: 2px solid #ea0046;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+.btn-primary {
+  background-color: #ea0046;
+  border-color: #ea0046;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #ea0046;
+  border-color: #ea0046;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: #1a1a1a;
+  color: #ffffff;
+ 
+}
+
+.table th,
+.table td {
+  border: 1px solid #333;
+  padding: 10px;
+  text-align: left;
+  transition: background-color 0.3s, color 0.3s;
+  white-space: nowrap; /* Prevents text from wrapping */
+  overflow: hidden; /* Hides overflowed text */
+  text-overflow: ellipsis; /* Adds ellipses to overflowing text */
+  max-width: 200px; /* Adjust the width as needed */
+}
+
+.table th {
+  background-color: #1f1f1f;
+  color: #ea0046;
+}
+
+.table tr:nth-child(even) {
+  background-color: #2a2a2a;
+}
+
+.table tr:hover {
+  background-color: #333;
+  color: #59a6e6;
+}
+
+.table th:hover,
+.table td:hover {
+  background-color: #333;
+  color: #166cdd;
+}
+
+.table th:first-child,
+.table td:first-child {
+  border-left: 2px solid #ea0046;
+}
+
+.table th:last-child,
+.table td:last-child {
+  border-right: 2px solid #ea0046;
+}
+
+
+.alert {
+  background-color: #262626;
+  color: #ffffff;
+  border: 1px solid #ea0046;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.alert .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #1a1a1a;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ea0046;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #ffffff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #ea0046;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.bg-dark {
+  --bs-bg-opacity: 0;
+}
+
+.navbar-text.developed-by {
+  font-size: 1em; /* Adjust font size as needed */
+  color: #69ddb1; /* White text color */
+  margin-right: 20px; /* Space between text and other elements */
+  animation: fadeIn 1s; /* Optional: animation for entry */
+}
+
+/* Keyframes for the fadeIn animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.vault-font {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #ea0046;
+  text-shadow: 0 0 10px #000000;
+  animation: fadeIn 1s;
+}
+
+.form-control {
+  background-color: #afa1a4;
+}
+
+.form-control:focus {
+  background-color: #afa1a4;
+}
+
+.form-select {
+  background-color: #afa1a4;
+}
+
+.btn-info {
+  background-color: #537ea7;
+  border-color: #000000;
+  color: rgb(0, 0, 0);
+}
+
+.btn-warning {
+  background-color: #e0c781;
+  border-color: #000000;
+  color: rgb(0, 0, 0);
+}
+
+.btn-danger {
+  background-color: #923853;
+  border-color: #000000;
+}
+
+.card {
+  border: 1px solid rgba(255, 166, 166, 0.233);
+}
+
+@keyframes fiery {
+  0% {
+    text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000,
+      0 0 20px #ff4500, 0 0 30px #ff4500, 0 0 40px #ff4500, 0 0 50px #ff4500,
+      0 0 75px #ff0000;
+    color: #702441;
+  }
+  50% {
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000,
+      0 0 40px #ff4500, 0 0 50px #ff4500, 0 0 60px #ff4500, 0 0 70px #ff4500,
+      0 0 100px #ff0000;
+    color: #491f2f;
+  }
+  100% {
+    text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000,
+      0 0 20px #ff4500, 0 0 30px #ff4500, 0 0 40px #ff4500, 0 0 50px #ff4500,
+      0 0 75px #ff0000;
+    color: #702441;
+  }
+}
+
+.fiery-text {
+  font-family: "Noto Sans JP", sans-serif;
+  font-size: 1.3em;
+  color: #fff;
+  text-align: center;
+  margin-top: 20%;
+  animation: fiery 4s infinite;
+}
+
+
+.copy-notification {
+  visibility: hidden;
+  min-width: 200px;
+  margin-left: -100px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 10px;
+  position: fixed;
+  z-index: 1000;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  font-size: 16px;
+  font-family: "Noto Sans JP", sans-serif;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.copy-notification.show {
+  visibility: visible;
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 1; }
+}
+
+.copy-notification.show {
+  animation: fadeInOut 2s, pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+      transform: scale(1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  }
+  50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+  }
+  100% {
+      transform: scale(1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+  }
+}
+
+
+#newComputerButton{
+  background-color:#354a66;
+}
+
+#newComputerButton.clicked {
+  background-color: #661d33;
+}

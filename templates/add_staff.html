@@ -1,0 +1,108 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Add Staff Form -->
+
+{% extends "base.html" %} {% block content %}
+<h2>Add New Staff</h2>
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.first_name.label }}<br />
+    {{ form.first_name(class="form-control mb-3", size=32) }} {% for error in
+    form.first_name.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.last_name.label }}<br />
+    {{ form.last_name(class="form-control mb-3", size=32) }} {% for error in
+    form.last_name.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.title.label }}<br />
+    {{ form.title(class="form-control mb-3", size=32) }} {% for error
+    in form.title.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.laptop_username.label }}<br />
+    {{ form.laptop_username(class="form-control mb-3", size=32) }} {% for error
+    in form.laptop_username.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.laptop_password.label }}<br />
+    {{ form.laptop_password(class="form-control mb-3", size=32) }} {% for error
+    in form.laptop_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.microsoft_password.label }}<br />
+    {{ form.microsoft_password(class="form-control mb-3", size=32) }} {% for
+    error in form.microsoft_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.google_password.label }}<br />
+    {{ form.google_password(class="form-control mb-3", size=32) }} {% for error
+    in form.google_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.xmedius_password.label }}<br />
+    {{ form.xmedius_password(class="form-control mb-3", size=32) }} {% for error
+    in form.xmedius_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.pin_code_number.label }}<br />
+    {{ form.pin_code_number(class="form-control mb-3", size=32) }} {% for error
+    in form.pin_code_number.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.keri_card_number.label }}<br />
+    {{ form.keri_card_number(class="form-control mb-3", size=32) }} {% for error
+    in form.keri_card_number.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.apple.label }}<br />
+    {{ form.apple(class="form-control mb-3", size=32) }} {% for error in
+    form.apple.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.device_id.label }}<br />
+    {{ form.device_id(class="form-control mb-3", size=32) }} {% for error
+    in form.device_id.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.powercord_id.label }}<br />
+    {{ form.powercord_id(class="form-control mb-3", size=32) }} {% for
+    error in form.powercord_id.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.notes.label }}<br />
+    {{ form.notes(class="form-control mb-3", size=32) }} {% for error in
+    form.notes.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+{% endblock %}

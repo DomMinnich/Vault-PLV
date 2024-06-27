@@ -1,0 +1,17 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- Import Staff.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2 class="my-4">Import Staff</h2>
+<form method="POST" enctype="multipart/form-data" action="">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+        <label for="file" class="form-label">CSV File</label>
+        <input type="file" class="form-control" id="file" name="file" required>
+    </div>
+    <div class="mb-3">
+        <input type="submit" class="btn btn-primary" value="Upload">
+    </div>
+</form>
+{% endblock %}

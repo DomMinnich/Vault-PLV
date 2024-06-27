@@ -1,0 +1,128 @@
+<!-- Dev Dominic Minnich 2024 -->
+<!-- edit_personnel.html -->
+
+{% extends "base.html" %} {% block content %}
+<h2 class="my-4">Edit Student</h2>
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.first_name.label }}<br />
+    {{ form.first_name(class="form-control mb-3", size=32) }} {% for error in
+    form.first_name.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.last_name.label }}<br />
+    {{ form.last_name(class="form-control mb-3", size=32) }} {% for error in
+    form.last_name.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.laptop_username.label }}<br />
+    {{ form.laptop_username(class="form-control mb-3", size=32) }} {% for error
+    in form.laptop_username.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.laptop_password.label }}<br />
+    {{ form.laptop_password(class="form-control mb-3", size=32) }} {% for error
+    in form.laptop_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.microsoft_email.label }}<br />
+    {{ form.microsoft_email(class="form-control mb-3", size=32) }} {% for error
+    in form.microsoft_email.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.microsoft_password.label }}<br />
+    {{ form.microsoft_password(class="form-control mb-3", size=32) }} {% for
+    error in form.microsoft_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.google_email.label }}<br />
+    {{ form.google_email(class="form-control mb-3", size=32) }} {% for error in
+    form.google_email.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.google_password.label }}<br />
+    {{ form.google_password(class="form-control mb-3", size=32) }} {% for error
+    in form.google_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.clever_email.label }}<br />
+    {{ form.clever_email(class="form-control mb-3", size=32) }} {% for error in
+      form.clever_email.errors %}
+      <span class="error">{{ error }}</span><br />
+      {% endfor %}
+  </p>
+  <p>
+    {{ form.clever_password.label }}<br />
+    {{ form.clever_password(class="form-control mb-3", size=32) }} {% for error
+    in form.clever_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.powerschool_email.label }}<br />
+    {{ form.powerschool_email(class="form-control mb-3", size=32) }} {% for error
+      in form.powerschool_email.errors %}
+      <span class="error">{{ error }}</span><br />
+      {% endfor %}
+  </p>
+  <p>
+    {{ form.powerschool_password.label }}<br />
+    {{ form.powerschool_password(class="form-control mb-3", size=32) }} {% for
+    error in form.powerschool_password.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.device_id.label }}<br />
+    {{ form.device_id(class="form-control mb-3", size=32) }} {% for error in
+    form.device_id.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>
+    {{ form.powercord_id.label }}<br />
+    {{ form.powercord_id(class="form-control mb-3", size=32) }} {% for error in
+    form.powercord_id.errors %}
+    <span class="error">{{ error }}</span><br />
+    {% endfor %}
+  </p>
+  <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+
+<h3 class="my-4">Personnel Logs</h3>
+<table class="table animate__animated animate__fadeIn">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Change</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in logs %}
+    <tr>
+      <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ log.change_description }}</td>
+      <td>{{ log.user.username }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
