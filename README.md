@@ -1,5 +1,5 @@
 # Vault
-![Logo2](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/2ecf3cac-221b-4db0-b4a9-5885f2fc2cd6)
+![1](https://github.com/DomMinnich/Vault-PLV/assets/113619219/a0ff1de3-3da8-402b-90b8-c3e69824810c)
 
 Vault (I nick-named FireFly) is an inventory management system designed to pull away from a very large Excel file that held all Student and Staff data which always got overwhelmed by many different local copies and update issues. 
 Offers a sleek, user-friendly experience with a dark and red-themed GUI. All webpages are dynamic and work on mobile. The system allows for comprehensive management of devices, personnel, and repairs, along with file handling and custom settings.
@@ -30,34 +30,35 @@ Offers a sleek, user-friendly experience with a dark and red-themed GUI. All web
 - **Password Reset**: Functionality for users to reset their passwords and for admins to reset passwords for other users.
 
 ## Directory Structure
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/b93c9e38-8356-4c2d-a109-21403aa6b8fa)
+![2](https://github.com/DomMinnich/Vault-PLV/assets/113619219/17f7fec3-3aab-4851-a425-8121d978d3f7)
 
 ## Login Page
 The login page allows users to authenticate themselves to gain access to the system. Users need to provide their username and password.
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/e98834f5-03b0-4ff9-8c45-81b44f4fb4ed)
+![3](https://github.com/DomMinnich/Vault-PLV/assets/113619219/9d40b49d-28d7-42b6-8287-0621569eaf4e)
 
 ## Register Page
 The register page is where new users can create an account. There are different types of registration codes to determine privilages and account types.
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/6b11a006-3f41-4c0c-967b-66f7c66b39e6)
+![4](https://github.com/DomMinnich/Vault-PLV/assets/113619219/6eae3889-b3d5-443c-bfee-ca32464330ea)
 
 ## Homepage
 The homepage provides an overview of the system and quick access to various functionalities. 
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/d34cab21-63f2-4a77-aa66-9ccfc58bbb36)
+![5](https://github.com/DomMinnich/Vault-PLV/assets/113619219/7130b11a-41dc-418b-920f-43de62ca6d95)
 
 ## Settings Page
 The settings page allows users to view their account type and update their personal settings. Admins have additional privileges to manage user accounts, including viewing all registered users, updating user roles, and resetting passwords etc..
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/e6b5e438-0281-40a8-a153-1fd017aa4404)
+![6](https://github.com/DomMinnich/Vault-PLV/assets/113619219/92d50c13-52a2-4600-a284-2771dc13b068)
 
 ## Device Management
 Device management allows users to add, update, and remove devices from the inventory. It includes functionalities to track device details, status, and device logs.
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/5237e3fb-5772-4229-8f33-0526f665655c)
-https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/2ac32dae-5de9-4c17-8dd6-d221341463b9
+![7](https://github.com/DomMinnich/Vault-PLV/assets/113619219/5bc5c2d3-ae46-450a-8e26-d77d73b748de)
+
+https://github.com/DomMinnich/Vault-PLV/assets/113619219/e9ed5ae3-9e89-491e-b1eb-90daa364f366
 
 ## Repair Management
 The repair management section is dedicated to handling repair details of devices. Users can log repair requests, track the status of ongoing repairs, and view repair history. This section helps ensure timely maintenance and repair of devices in the inventory.
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/1e20487e-8b7f-401e-93de-161656df80fd)
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/3d98df16-9317-424a-9d80-92b1dd8c7bbd)
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/c800b4be-df22-44b9-9e06-37b042b60181)
+![20](https://github.com/DomMinnich/Vault-PLV/assets/113619219/760cb804-e57d-416a-9067-c0259acd290d)
+![21](https://github.com/DomMinnich/Vault-PLV/assets/113619219/24a5fe34-1aed-4325-9c68-cb7982e89978)
+![22](https://github.com/DomMinnich/Vault-PLV/assets/113619219/dc72b6fa-d560-4c61-b24d-487eb4fc41e0)
 
 ## Webfiles
 The webfiles section is a custom file explorer that allows users to manage files within the `miniRoot` directory. Key features include:
@@ -65,8 +66,8 @@ The webfiles section is a custom file explorer that allows users to manage files
 - Right-click functionality for files to download, delete, and move to the parent directory.
 - Drag and drop box for adding files.
 - Options to move folders and files to child directories.
-![image](https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/25faf9c9-dcaa-4897-b775-b8115737c716)
-https://github.com/DomMinnich/InventorySys_experimental/assets/113619219/1cb0eab2-38cc-4cf9-afe3-c96cb517e317
+![24](https://github.com/DomMinnich/Vault-PLV/assets/113619219/a4a6a50f-a6bd-48f4-a228-46d1aaadb4f8)
+https://github.com/DomMinnich/Vault-PLV/assets/113619219/ae1c0c66-95a4-4849-b635-ebdaeaacd541
 
 # For detailed information on specific security features, refer to the sections below:
 
