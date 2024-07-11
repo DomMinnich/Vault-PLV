@@ -860,8 +860,8 @@ def import_personnel():
                         personnel.clever_password = row[10]
                         personnel.powerschool_email = row[11]
                         personnel.powerschool_password = row[12]
-                        personnel.device_id = int(row[9]) if row[13] else None
-                        personnel.powercord_id = int(row[10]) if row[14] else None
+                        personnel.device_id = int(row[13]) if row[13] else None
+                        personnel.powercord_id = int(row[14]) if row[14] else None
                     else:
                         # Add new personnel
                         new_personnel = Personnel(
