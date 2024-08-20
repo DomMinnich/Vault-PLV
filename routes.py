@@ -17,6 +17,7 @@
 import datetime
 import secrets
 import shutil
+import traceback
 from PIL import Image
 from docx import Document
 from flask import (
@@ -729,245 +730,300 @@ def homepage():
 @login_required
 def import_devices():
     form = ImportDevicesForm()  # Create an instance of the form
-    if form.validate_on_submit():
-        file = form.file.data  # Access the file field from the form
-        if file and file.filename.endswith(".csv"):
-            stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
-            csv_input = csv.reader(stream)
-            header = next(csv_input)  # Skip header row
+    traceback_info = None  # Initialize traceback_info
 
-            device_ids = set()
-            asset_numbers = set()
-            error_messages = []
+    try:
+        if form.validate_on_submit():
+            file = form.file.data  # Access the file field from the form
+            if file and file.filename.endswith(".csv"):
+                stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
+                csv_input = csv.reader(stream)
+                header = next(csv_input)  # Skip header row
 
-            for row in csv_input:
-                if len(row) != 9:
-                    error_messages.append("Each row must have 9 fields.")
-                    break
+                device_ids = set()
+                asset_numbers = set()
+                error_messages = []
 
-                try:
-                    device_id = int(row[0])
-                    if device_id in device_ids:
-                        error_messages.append(f"Duplicate ID found: {device_id}")
-                    device_ids.add(device_id)
-                except ValueError:
-                    error_messages.append(f"Invalid ID: {row[0]}")
-                    continue
+                for line_number, row in enumerate(csv_input, start=2):  # Start from 2 because of the header
+                    if len(row) != 9:
+                        error_messages.append(f"Line {line_number}: Each row must have 9 fields.")
+                        break
 
-                if row[2] in asset_numbers:
-                    error_messages.append(f"Duplicate Asset Number found: {row[2]}")
-                asset_numbers.add(row[2])
+                    try:
+                        device_id = int(row[0])
+                        if device_id in device_ids:
+                            error_messages.append(f"Line {line_number}: Duplicate ID found: {device_id}")
+                        device_ids.add(device_id)
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Invalid ID: {row[0]}")
+                        continue
 
-                try:
-                    purchase_date = datetime.datetime.strptime(row[5], "%m/%d/%Y")
-                except ValueError:
-                    error_messages.append(
-                        f"Invalid date format for purchase date: {row[5]}, should be Month/Day/Year"
-                    )
-                    continue
+                    if row[2] in asset_numbers:
+                        error_messages.append(f"Line {line_number}: Duplicate Asset Number found: {row[2]}")
+                    asset_numbers.add(row[2])
 
-            if error_messages:
-                for error in error_messages:
-                    flash(error, "danger")
-            else:
-                stream.seek(0)
-                next(csv_input)  # Skip header row again
-                for row in csv_input:
-                    device_id = int(row[0])
-                    device = Device.query.get(device_id)
-                    if device:
-                        # Update existing device
-                        device.model_name = row[1]
-                        device.asset_number = row[2]
-                        device.serial_number = row[3]
-                        device.manufacturer = row[4]
-                        device.purchase_date = datetime.datetime.strptime(
-                            row[5], "%m/%d/%Y"
-                        )
-                        device.warranty_info = row[6]
-                        device.assigned_user = row[7]
-                        device.status = row[8]
-                    else:
-                        # Add new device
-                        new_device = Device(
-                            id=device_id,
-                            model_name=row[1],
-                            asset_number=row[2],
-                            serial_number=row[3],
-                            manufacturer=row[4],
-                            purchase_date=datetime.datetime.strptime(
+                    try:
+                        purchase_date = datetime.datetime.strptime(row[5], "%m/%d/%Y")
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Invalid date format for purchase date: {row[5]}, should be Month/Day/Year")
+                        continue
+
+                if error_messages:
+                    for error in error_messages:
+                        flash(error, "danger")
+                else:
+                    stream.seek(0)
+                    next(csv_input)  # Skip header row again
+                    for row in csv_input:
+                        device_id = int(row[0])
+                        device = Device.query.get(device_id)
+                        if device:
+                            # Update existing device
+                            device.model_name = row[1]
+                            device.asset_number = row[2]
+                            device.serial_number = row[3]
+                            device.manufacturer = row[4]
+                            device.purchase_date = datetime.datetime.strptime(
                                 row[5], "%m/%d/%Y"
-                            ),
-                            warranty_info=row[6],
-                            assigned_user=row[7],
-                            status=row[8],
-                        )
-                        db.session.add(new_device)
-                db.session.commit()
-                flash("Devices imported successfully!", "success")
-        else:
-            flash("Invalid file format. Please upload a CSV file.", "danger")
-    return render_template("import_devices.html", form=form)
+                            )
+                            device.warranty_info = row[6]
+                            device.assigned_user = row[7]
+                            device.status = row[8]
+                        else:
+                            # Add new device
+                            new_device = Device(
+                                id=device_id,
+                                model_name=row[1],
+                                asset_number=row[2],
+                                serial_number=row[3],
+                                manufacturer=row[4],
+                                purchase_date=datetime.datetime.strptime(
+                                    row[5], "%m/%d/%Y"
+                                ),
+                                warranty_info=row[6],
+                                assigned_user=row[7],
+                                status=row[8],
+                            )
+                            db.session.add(new_device)
+                    db.session.commit()
+                    flash("Devices imported successfully!", "success")
+            else:
+                flash("Invalid file format. Please upload a CSV file.", "danger")
+    except Exception as e:
+        flash("Something went wrong while uploading your file. For more information, view the DON'T PANIC error log.", "danger")
+        # Capture and log the actual error for debugging purposes
+        traceback_info = traceback.format_exc()
+        current_app.logger.error(f"Error during device import: {traceback_info}")
+
+    return render_template("import_devices.html", form=form, traceback=traceback_info)
 
 @main.route("/import_personnel", methods=["GET", "POST"])
 @login_required
 def import_personnel():
     form = ImportPersonnelForm()  # Create an instance of the form
-    if form.validate_on_submit():
-        file = form.file.data  # Access the file field from the form
-        if file and file.filename.endswith(".csv"):
-            stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
-            csv_input = csv.reader(stream)
-            header = next(csv_input)  # Skip header row
+    traceback_info = None  # Initialize traceback_info
 
-            personnel_ids = set()
-            error_messages = []
+    try:
+        if form.validate_on_submit():
+            file = form.file.data  # Access the file field from the form
+            if file and file.filename.endswith(".csv"):
+                stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
+                csv_input = csv.reader(stream)
+                header = next(csv_input)  # Skip header row
 
-            for row in csv_input:
-                if len(row) != 15:
-                    error_messages.append("Each row must have 15 fields.")
-                    break
+                personnel_ids = set()
+                error_messages = []
 
-                try:
-                    personnel_id = int(row[0])
-                    if personnel_id in personnel_ids:
-                        error_messages.append(f"Duplicate ID found: {personnel_id}")
-                    personnel_ids.add(personnel_id)
-                except ValueError:
-                    error_messages.append(f"Invalid ID: {row[0]}")
-                    continue
+                for line_number, row in enumerate(csv_input, start=2):  # Start from 2 because of the header
+                    if len(row) != 16:
+                        error_messages.append(f"Line {line_number}: Each row must have 15 fields.")
+                        break
 
-            if error_messages:
-                for error in error_messages:
-                    flash(error, "danger")
+                    try:
+                        personnel_id = int(row[0])
+                        if personnel_id in personnel_ids:
+                            error_messages.append(f"Line {line_number}: Duplicate ID found: {personnel_id}")
+                        personnel_ids.add(personnel_id)
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Invalid ID: {row[0]}")
+                        continue
+
+                    # Check for non-integer values in device_id and powercord_id
+                    try:
+                        if row[13]:  # Check if device_id is provided
+                            device_id = int(row[13])
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Non-integer value for device_id: {row[13]}")
+
+                    try:
+                        if row[14]:  # Check if powercord_id is provided
+                            powercord_id = int(row[14])
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Non-integer value for powercord_id: {row[14]}")
+
+                if error_messages:
+                    for error in error_messages:
+                        flash(error, "danger")
+                else:
+                    stream.seek(0)
+                    next(csv_input)  # Skip header row again
+                    for row in csv_input:
+                        personnel_id = int(row[0])
+                        personnel = Personnel.query.get(personnel_id)
+                        if personnel:
+                            # Update existing personnel
+                            personnel.first_name = row[1]
+                            personnel.last_name = row[2]
+                            personnel.laptop_username = row[3]
+                            personnel.laptop_password = row[4]
+                            personnel.microsoft_email = row[5]
+                            personnel.microsoft_password = row[6]
+                            personnel.google_email = row[7]
+                            personnel.google_password = row[8]
+                            personnel.clever_email = row[9]
+                            personnel.clever_password = row[10]
+                            personnel.powerschool_email = row[11]
+                            personnel.powerschool_password = row[12]
+                            personnel.device_id = int(row[13]) if row[13] else None
+                            personnel.powercord_id = int(row[14]) if row[14] else None
+                            personnel.graduation_year = row[15]
+                        else:
+                            # Add new personnel
+                            new_personnel = Personnel(
+                                id=personnel_id,
+                                first_name=row[1],
+                                last_name=row[2],
+                                laptop_username=row[3],
+                                laptop_password=row[4],
+                                microsoft_email=row[5],
+                                microsoft_password=row[6],
+                                google_email=row[7],
+                                google_password=row[8],
+                                clever_email=row[9],
+                                clever_password=row[10],
+                                powerschool_email=row[11],
+                                powerschool_password=row[12],
+                                device_id=int(row[13]) if row[13] else None,
+                                powercord_id=int(row[14]) if row[14] else None,
+                                graduation_year=row[15],
+                            )
+                            db.session.add(new_personnel)
+                    db.session.commit()
+                    flash("Students imported successfully!", "success")
             else:
-                stream.seek(0)
-                next(csv_input)  # Skip header row again
-                for row in csv_input:
-                    personnel_id = int(row[0])
-                    personnel = Personnel.query.get(personnel_id)
-                    if personnel:
-                        # Update existing personnel
-                        personnel.first_name = row[1]
-                        personnel.last_name = row[2]
-                        personnel.laptop_username = row[3]
-                        personnel.laptop_password = row[4]
-                        personnel.microsoft_email = row[5]
-                        personnel.microsoft_password = row[6]
-                        personnel.google_email = row[7]
-                        personnel.google_password = row[8]
-                        personnel.clever_email = row[9]
-                        personnel.clever_password = row[10]
-                        personnel.powerschool_email = row[11]
-                        personnel.powerschool_password = row[12]
-                        personnel.device_id = int(row[13]) if row[13] else None
-                        personnel.powercord_id = int(row[14]) if row[14] else None
-                    else:
-                        # Add new personnel
-                        new_personnel = Personnel(
-                            id=personnel_id,
-                            first_name=row[1],
-                            last_name=row[2],
-                            laptop_username=row[3],
-                            laptop_password=row[4],
-                            microsoft_email=row[5],
-                            microsoft_password=row[6],
-                            google_email=row[7],
-                            google_password=row[8],
-                            clever_email=row[9],
-                            clever_password=row[10],
-                            powerschool_email=row[11],
-                            powerschool_password=row[12],
-                            device_id=int(row[13]) if row[13] else None,
-                            powercord_id=int(row[14]) if row[14] else None,
-                        )
-                        db.session.add(new_personnel)
-                db.session.commit()
-                flash("Students imported successfully!", "success")
-        else:
-            flash("Invalid file format. Please upload a CSV file.", "danger")
-    return render_template("import_personnel.html", form=form)
+                flash("Invalid file format. Please upload a CSV file.", "danger")
+    except Exception as e:
+        flash("Something went wrong while uploading your file. For more information, view the DON'T PANIC error log.", "danger")
+        # Capture and log the actual error for debugging purposes
+        traceback_info = traceback.format_exc()
+        current_app.logger.error(f"Error during personnel import: {traceback_info}")
+
+    return render_template("import_personnel.html", form=form, traceback=traceback_info)
 
 @main.route("/import_staff", methods=["GET", "POST"])
 @login_required
 def import_staff():
     if not current_user.is_admin:
         return redirect(url_for("main.homepage"))
+    
     form = ImportStaffForm()  # Create an instance of the form
-    if form.validate_on_submit():
-        file = form.file.data  # Access the file field from the form
-        if file and file.filename.endswith(".csv"):
-            stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
-            csv_input = csv.reader(stream)
-            header = next(csv_input)  # Skip header row
+    traceback_info = None  # Initialize traceback_info
 
-            staff_ids = set()
-            error_messages = []
+    try:
+        if form.validate_on_submit():
+            file = form.file.data  # Access the file field from the form
+            if file and file.filename.endswith(".csv"):
+                stream = StringIO(file.stream.read().decode("UTF-8", errors="ignore"))
+                csv_input = csv.reader(stream)
+                header = next(csv_input)  # Skip header row
 
-            for row in csv_input:
-                if len(row) != 15:
-                    error_messages.append("Each row must have 10 fields.")
-                    break
+                staff_ids = set()
+                error_messages = []
 
-                try:
-                    staff_id = int(row[0])
-                    if staff_id in staff_ids:
-                        error_messages.append(f"Duplicate ID found: {staff_id}")
-                    staff_ids.add(staff_id)
-                except ValueError:
-                    error_messages.append(f"Invalid ID: {row[0]}")
-                    continue
+                for line_number, row in enumerate(csv_input, start=2):  # Start from 2 because of the header
+                    if len(row) != 15:
+                        error_messages.append(f"Line {line_number}: Each row must have 15 fields.")
+                        break
 
-            if error_messages:
-                for error in error_messages:
-                    flash(error, "danger")
+                    try:
+                        staff_id = int(row[0])
+                        if staff_id in staff_ids:
+                            error_messages.append(f"Line {line_number}: Duplicate ID found: {staff_id}")
+                        staff_ids.add(staff_id)
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Invalid ID: {row[0]}")
+                        continue
+
+                    # Check for non-integer values in device_id and powercord_id
+                    try:
+                        if row[12]:  # Check if device_id is provided
+                            device_id = int(row[12])
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Non-integer value for device_id: {row[12]}")
+
+                    try:
+                        if row[13]:  # Check if powercord_id is provided
+                            powercord_id = int(row[13])
+                    except ValueError:
+                        error_messages.append(f"Line {line_number}: Non-integer value for powercord_id: {row[13]}")
+
+                if error_messages:
+                    for error in error_messages:
+                        flash(error, "danger")
+                else:
+                    stream.seek(0)
+                    next(csv_input)  # Skip header row again
+                    for row in csv_input:
+                        staff_id = int(row[0])
+                        staff = Staff.query.get(staff_id)
+                        if staff:
+                            # Update existing staff
+                            staff.first_name = row[1]
+                            staff.last_name = row[2]
+                            staff.title = row[3]
+                            staff.laptop_username = row[4]
+                            staff.laptop_password = row[5]
+                            staff.microsoft_password = row[6]
+                            staff.google_password = row[7]
+                            staff.xmedius_password = row[8]
+                            staff.pin_code_number = row[9]
+                            staff.keri_card_number = row[10]
+                            staff.apple = row[11]
+                            staff.device_id = int(row[12]) if row[12] else None
+                            staff.powercord_id = int(row[13]) if row[13] else None
+                            staff.notes = row[14]
+                        else:
+                            # Add new staff
+                            new_staff = Staff(
+                                id=staff_id,
+                                first_name=row[1],
+                                last_name=row[2],
+                                title=row[3],
+                                laptop_username=row[4],
+                                laptop_password=row[5],
+                                microsoft_password=row[6],
+                                google_password=row[7],
+                                xmedius_password=row[8],
+                                pin_code_number=row[9],
+                                keri_card_number=row[10],
+                                apple=row[11],
+                                device_id=int(row[12]) if row[12] else None,
+                                powercord_id=int(row[13]) if row[13] else None,
+                                notes=row[14],
+                            )
+                            db.session.add(new_staff)
+                    db.session.commit()
+                    flash("Staff imported successfully!", "success")
             else:
-                stream.seek(0)
-                next(csv_input)  # Skip header row again
-                for row in csv_input:
-                    staff_id = int(row[0])
-                    staff = Staff.query.get(staff_id)
-                    if staff:
-                        # Update existing staff
-                        staff.first_name = row[1]
-                        staff.last_name = row[2]
-                        staff.title = row[3]
-                        staff.laptop_username = row[4]
-                        staff.laptop_password = row[5]
-                        staff.microsoft_password = row[6]
-                        staff.google_password = row[7]
-                        staff.xmedius_password = row[8]
-                        staff.pin_code_number = row[9]
-                        staff.keri_card_number = row[10]
-                        staff.apple = row[11]
-                        staff.device_id = row[12]
-                        staff.powercord_id = row[13]
-                        staff.notes = row[14]
-                    else:
-                        # Add new staff
-                        new_staff = Staff(
-                            id=staff_id,
-                            first_name=row[1],
-                            last_name=row[2],
-                            title=row[3],
-                            laptop_username=row[4],
-                            laptop_password=row[5],
-                            microsoft_password=row[6],
-                            google_password=row[7],
-                            xmedius_password=row[8],
-                            pin_code_number=row[9],
-                            keri_card_number=row[10],
-                            apple=row[11],
-                            device_id=row[12],
-                            powercord_id=row[13],
-                            notes=row[14],
-                        )
-                        db.session.add(new_staff)
-                db.session.commit()
-                flash("Staff imported successfully!", "success")
-        else:
-            flash("Invalid file format. Please upload a CSV file.", "danger")
-    return render_template("import_staff.html", form=form)
+                flash("Invalid file format. Please upload a CSV file.", "danger")
+    except Exception as e:
+        flash("Something went wrong while uploading your file. For more information, view the DON'T PANIC error log.", "danger")
+        # Capture and log the actual error for debugging purposes
+        traceback_info = traceback.format_exc()
+        current_app.logger.error(f"Error during staff import: {traceback_info}")
+
+    return render_template("import_staff.html", form=form, traceback=traceback_info)
+
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
