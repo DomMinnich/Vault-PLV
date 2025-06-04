@@ -18,6 +18,7 @@ Offers a sleek, user-friendly experience with a dark and red-themed GUI. All web
 - [Forms](#forms-formspy)
 - [Routes](#routes-routespy)
 - [Specific Security Implementations](#specific-security-implementations)
+- [License](#license)
 
 ## OVERVIEW
 - **User Management**: Classify users as normal users or admins during registration based on a unique registration code. 
@@ -123,3 +124,6 @@ This file defines the URL routes and associated view functions. It contains seve
 6. **Flash Messages**:
    - Use of flash messages for user feedback, which helps in preventing certain types of attacks like phishing by ensuring users are aware of actions taken.
 
+## Licence
+This project is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
+You are free to view, fork, and modify this code for personal, educational, or recruitment-related purposes, but you may not use it for any commercial purpose whatsoever.
